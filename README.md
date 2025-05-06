@@ -1,5 +1,3 @@
-# Create the README content as a .txt file
-readme_content = """
 📚 Ask to ChatGPT – Multi-PDF RAG Chatbot
 
 A Streamlit-based chatbot that allows you to upload multiple PDF files and ask questions about their contents. It uses LangChain, FAISS, and Gemini (Google Generative AI) for Retrieval-Augmented Generation (RAG).
