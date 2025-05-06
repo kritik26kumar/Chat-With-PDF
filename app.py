@@ -29,9 +29,12 @@ def get_text_chunks(text):
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings=GoogleGenerativeAIEmbeddings(google_api_key=os.getenv("GOOGLE_API_KEY"),model='models/embedding-001')
-    vector_store=FAISS.from_texts(text_chunks,embedding=embeddings)
+    embeddings = GoogleGenerativeAIEmbeddings(
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        model='models/embedding-001')
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local('faiss_index')
+    return vector_store
 
 def get_conversational_chain():
     prompt_template='''
