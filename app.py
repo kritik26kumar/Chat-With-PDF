@@ -67,8 +67,8 @@ def user_input(user_question):
 
 
 def main():
-    st.set_page_config('Ask to ChatGPT',layout='wide')
-    st.header('Ask to ChatGPT')
+    st.set_page_config('Chat with PDFs',layout='wide')
+    st.header('Chat with PDFs')
 
     user_question = st.text_input("Ask a Question from the PDF Files")
 
