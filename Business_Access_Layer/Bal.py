@@ -9,22 +9,21 @@ from langchain.prompts import PromptTemplate
 from langchain_groq.chat_models import ChatGroq
 from dotenv import load_dotenv
 import streamlit as st
-# Load environment variables
 
+# Load environment variables
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-
-class business_func():
-    # Function to split text into chunks
-    def get_text_chunks(self,text):
+class business_func:
+    # Function to split text into chunks    
+    def get_text_chunks(self, text):
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         chunks = text_splitter.split_text(text)
         return chunks
 
     # Cached function to create and save vector store
-    def get_vector_store(self,text_chunks):
+    def get_vector_store(self, text_chunks):
         try:
             embeddings = GoogleGenerativeAIEmbeddings(
                 google_api_key=GOOGLE_API_KEY, model="models/embedding-001"
@@ -36,9 +35,8 @@ class business_func():
             st.error(f"Error creating vector store: {str(e)}")
             return None
 
-
     # Function to create conversational chain based on selected model
-    def get_conversational_chain(self,selected_model):
+    def get_conversational_chain(self, selected_model):
         prompt_template = '''
         Answer the question as detailed as possible from the provided context. If the answer is not in the context, 
         just say "answer is not available in the context". Do not make up an answer.
@@ -65,7 +63,7 @@ class business_func():
                     return None
                 model = ChatGroq(
                     groq_api_key=GROQ_API_KEY,
-                    model_name="llama3-8b-8192",  # Can be made configurable
+                    model_name="llama3-8b-8192",
                     temperature=0.3
                 )
             else:
@@ -78,10 +76,8 @@ class business_func():
             st.error(f"Error initializing model: {str(e)}")
             return None
 
-
-
     # Function to process user input and generate response
-    def user_input(self,user_question, selected_model):
+    def user_input(self, user_question, selected_model):
         try:
             embeddings = GoogleGenerativeAIEmbeddings(
                 google_api_key=GOOGLE_API_KEY, model="models/embedding-001"
@@ -89,7 +85,7 @@ class business_func():
             # Load FAISS index
             if not os.path.exists("faiss_index"):
                 st.error("Vector store not found. Please process PDFs first.")
-                return
+                return None
 
             new_db = FAISS.load_local(
                 "faiss_index", embeddings, allow_dangerous_deserialization=True
@@ -98,12 +94,14 @@ class business_func():
 
             chain = self.get_conversational_chain(selected_model)
             if chain is None:
-                return
+                return None
 
             response = chain(
                 {"input_documents": docs, "question": user_question},
                 return_only_outputs=True
             )
-            st.write("Reply:", response["output_text"])
+            response_text = response["output_text"]
+            return response_text
         except Exception as e:
             st.error(f"Error processing question: {str(e)}")
+            return None
