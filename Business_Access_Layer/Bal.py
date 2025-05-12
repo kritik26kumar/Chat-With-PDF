@@ -38,8 +38,12 @@ class business_func:
     # Function to create conversational chain based on selected model
     def get_conversational_chain(self, selected_model):
         prompt_template = '''
-        Answer the question as detailed as possible from the provided context. If the answer is not in the context, 
-        just say "answer is not available in the context". Do not make up an answer.
+        You are a helpful assistant. Use the provided context extracted from PDF or image files to answer the question as accurately as possible.
+
+        Instructions:
+        - Base your answer strictly on the context below.
+        - Do NOT guess or fabricate any information.
+        - If the answer is not explicitly mentioned in the context, reply: "The answer is not available in the provided context."
 
         Context:
         {context}
